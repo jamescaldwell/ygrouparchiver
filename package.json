@@ -1,0 +1,29 @@
+{
+  "name": "ygrouparchiver",
+  "version": "1.0.0",
+  "description": "Migrate yahoo group mbox files to a database plus webview",
+  "main": "index.js",
+  "scripts": {
+    "test": "grunt"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jamescaldwell/ygrouparchiver.git"
+  },
+  "keywords": [
+    "Yahoo",
+    "Groups",
+    "Archive",
+    "Viewer"
+  ],
+  "author": "Jim Caldwell",
+  "license": "Unlicense",
+  "bugs": {
+    "url": "https://github.com/jamescaldwell/ygrouparchiver/issues"
+  },
+  "homepage": "https://github.com/jamescaldwell/ygrouparchiver#readme",
+  "dependencies": {
+    "mailparser": "^2.7.7",
+    "node-mbox": "^1.0.0"
+  }
+}
