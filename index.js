@@ -1,3 +1,5 @@
+'use strict';
+
 const program = require('commander');
 const fs = require('fs');
 const path = require('path');
@@ -9,6 +11,7 @@ const simpleParser = require('mailparser').simpleParser;
 const mysql      = require('mysql');
 const async = require('async')
 const Mbox = require('node-mbox');
+
 
 program.version('1.0.0');
 program.option("-p, --path <path>", "Input path (file or directory)", "./mbox")
@@ -149,26 +152,32 @@ connection.connect(function(err) {
 Parse through all mbox files
 */
 let MBoxParse = function() {
+  console.log("=> Mbox file iterations start");
   async.eachSeries(filesCollection, function(mboxFile, next) {
     console.log("Processing " + mboxFile + "...");
     ParseMbox(mboxFile);
     next();
   }, function(err) {
-    console.log("iterations done");
+    console.log("<= Mbox file iterations done");
     Finish();
   });
 };
 
 let Finish = function() {
   console.log("We are done!!!!!");
+  connection.end();   // close database
   process.exit(0);
 };
 
 // parse the mbox file
 let ParseMbox = function(mboxFile) {
-  console.log("Enter ParseMBox " + mboxFile);
-  let mbox = new Mbox(mboxFile, {});
+  console.log("=> ParseMBox " + mboxFile);
+  const mailbox = fs.readFileSync(mboxFile);
+  const mbox    = new Mbox(mailbox);
+
   mbox.on('message', function(msg) {
+    console.log("==>On message:" + msg);
+    let opts = {formatDateString: date => date.toUTCString()};
     simpleParser(msg, opts, (err, mail) => {
       if (mail.headers.has('subject'))
 			{
@@ -178,11 +187,11 @@ let ParseMbox = function(mboxFile) {
   });
 
   mbox.on('error', function(err) {
-    console.error('Err->', err);
+    console.error('==>Err->', err);
   });
 
   mbox.on('end', function() {
-    console.log("   Done");
+    console.log("<=  ParseMbox Done");
   });
 
 };
